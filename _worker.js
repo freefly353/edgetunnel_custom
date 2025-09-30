@@ -180,7 +180,10 @@ export default {
                 if (url.searchParams.has('sub') && url.searchParams.get('sub') !== '') sub = url.searchParams.get('sub').toLowerCase();
                 if (url.searchParams.has('notls')) noTLS = 'true';
 
-                if (url.searchParams.has('proxyip')) {
+                if(url.searchParams.has('forceProxyIP=true')) {
+					path = `?forceProxyIP=true`;
+				}
+				if (url.searchParams.has('proxyip')) {
 					if (url.searchParams.has('forceProxyIP=true')) {
 						path = `/proxyip=${url.searchParams.get('proxyip')}&forceProxyIP=true`;
 					} else {
@@ -7227,6 +7230,7 @@ function config_Html(token = "test", proxyhost = "") {
     return html;
 
 }
+
 
 
 
