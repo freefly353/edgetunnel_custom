@@ -578,7 +578,7 @@ async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portR
     // 首次尝试连接远程服务器
 	if (forceProxyIP) {
 		// 否则，尝试使用预设的代理 IP（如果有）或原始地址重试连接
-		/*if (!proxyIP || proxyIP == '') {
+		if (!proxyIP || proxyIP == '') {
 			proxyIP = atob('UFJPWFlJUC50cDEuMDkwMjI3Lnh5eg==');
 		} else if (proxyIP.includes(']:')) {
 			portRemote = proxyIP.split(']:')[1] || portRemote;
@@ -588,8 +588,8 @@ async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portR
 			proxyIP = proxyIP.split(':')[0] || proxyIP;
 		}
 		if (proxyIP.includes('.tp')) portRemote = proxyIP.split('.tp')[1].split('.')[0] || portRemote;
-		tcpSocket = await connectAndWrite(proxyIP.toLowerCase() || addressRemote, portRemote);*/
-		if (!useSocks) {
+		tcpSocket = await connectAndWrite(proxyIP.toLowerCase() || addressRemote, portRemote);
+		/*if (!useSocks) {
             const nat64Proxyip = `[${await resolveToIPv6(addressRemote)}]`;
             log(`NAT64 代理连接到 ${nat64Proxyip}:443`);
             tcpSocket = await connectAndWrite(nat64Proxyip, 443);
@@ -599,15 +599,15 @@ async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portR
         }).finally(() => {
             safeCloseWebSocket(webSocket);
         })
-		remoteSocketToWS(tcpSocket, webSocket, 维列斯ResponseHeader, null, log);
+		remoteSocketToWS(tcpSocket, webSocket, 维列斯ResponseHeader, null, log);*/
 	} else {
 		tcpSocket = await connectAndWrite(addressRemote, portRemote, useSocks, enableHttp);
-		remoteSocketToWS(tcpSocket, webSocket, 维列斯ResponseHeader, retry, log);
+		//remoteSocketToWS(tcpSocket, webSocket, 维列斯ResponseHeader, retry, log);
 	}
     // 当远程 Socket 就绪时，将其传递给 WebSocket
     // 建立从远程服务器到 WebSocket 的数据流，用于将远程服务器的响应发送回客户端
     // 如果连接失败或无数据，retry 函数将被调用进行重试
-    //remoteSocketToWS(tcpSocket, webSocket, 维列斯ResponseHeader, retry, log);
+    remoteSocketToWS(tcpSocket, webSocket, 维列斯ResponseHeader, retry, log);
 }
 
 /**
@@ -7242,6 +7242,7 @@ function config_Html(token = "test", proxyhost = "") {
     return html;
 
 }
+
 
 
 
