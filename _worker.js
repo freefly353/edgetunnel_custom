@@ -12,6 +12,7 @@ let subEmoji = 'true';
 let socks5Address = '';
 let parsedSocks5Address = {};
 let enableSocks = false;
+let forceProxyIP = false;
 let enableHttp = false;
 let noTLS = 'false';
 const expire = 4102329600;//2099-12-31
@@ -290,6 +291,9 @@ export default {
                     enableSocks = false;
                 }
 
+				if (url.searchParams.has('forceProxyIP')) {
+					forceProxyIP = true;
+				}
                 if (url.searchParams.has('proxyip')) {
                     proxyIP = url.searchParams.get('proxyip');
                     enableSocks = false;
@@ -563,8 +567,22 @@ async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portR
     let useSocks = false;
     if (go2Socks5s.length > 0 && enableSocks) useSocks = await useSocks5Pattern(addressRemote);
     // 首次尝试连接远程服务器
-    let tcpSocket = await connectAndWrite(addressRemote, portRemote, useSocks, enableHttp);
-
+	if (forceProxyIP) {
+		// 否则，尝试使用预设的代理 IP（如果有）或原始地址重试连接
+		if (!proxyIP || proxyIP == '') {
+			proxyIP = atob('UFJPWFlJUC50cDEuMDkwMjI3Lnh5eg==');
+		} else if (proxyIP.includes(']:')) {
+			portRemote = proxyIP.split(']:')[1] || portRemote;
+			proxyIP = proxyIP.split(']:')[0] + "]" || proxyIP;
+		} else if (proxyIP.split(':').length === 2) {
+			portRemote = proxyIP.split(':')[1] || portRemote;
+			proxyIP = proxyIP.split(':')[0] || proxyIP;
+		}
+		if (proxyIP.includes('.tp')) portRemote = proxyIP.split('.tp')[1].split('.')[0] || portRemote;
+		let tcpSocket = await connectAndWrite(proxyIP.toLowerCase() || addressRemote, portRemote);
+	} else {
+		let tcpSocket = await connectAndWrite(addressRemote, portRemote, useSocks, enableHttp);
+	}
     // 当远程 Socket 就绪时，将其传递给 WebSocket
     // 建立从远程服务器到 WebSocket 的数据流，用于将远程服务器的响应发送回客户端
     // 如果连接失败或无数据，retry 函数将被调用进行重试
@@ -6648,7 +6666,10 @@ function config_Html(token = "test", proxyhost = "") {
                     params.push('sub=' + encodeURIComponent(settings.subValue));
                 }
             }
-            
+
+			if (settings.ForceUseProxyipEnabled) {
+                params.push('forceProxyIP=' + encodeURIComponent(settings.ForceUseProxyipEnabled));
+            }
             // 处理代理参数（互斥）
             if (settings.proxyipEnabled && settings.proxyipValue) {
                 params.push('proxyip=' + encodeURIComponent(settings.proxyipValue));
@@ -7200,3 +7221,4 @@ function config_Html(token = "test", proxyhost = "") {
     return html;
 
 }
+
