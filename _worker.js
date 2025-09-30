@@ -565,6 +565,7 @@ async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portR
     }
 
     let useSocks = false;
+	let tcpSocket;
     if (go2Socks5s.length > 0 && enableSocks) useSocks = await useSocks5Pattern(addressRemote);
     // 首次尝试连接远程服务器
 	if (forceProxyIP) {
@@ -579,9 +580,9 @@ async function handleTCPOutBound(remoteSocket, addressType, addressRemote, portR
 			proxyIP = proxyIP.split(':')[0] || proxyIP;
 		}
 		if (proxyIP.includes('.tp')) portRemote = proxyIP.split('.tp')[1].split('.')[0] || portRemote;
-		let tcpSocket = await connectAndWrite(proxyIP.toLowerCase() || addressRemote, portRemote);
+		tcpSocket = await connectAndWrite(proxyIP.toLowerCase() || addressRemote, portRemote);
 	} else {
-		let tcpSocket = await connectAndWrite(addressRemote, portRemote, useSocks, enableHttp);
+		tcpSocket = await connectAndWrite(addressRemote, portRemote, useSocks, enableHttp);
 	}
     // 当远程 Socket 就绪时，将其传递给 WebSocket
     // 建立从远程服务器到 WebSocket 的数据流，用于将远程服务器的响应发送回客户端
@@ -7221,4 +7222,5 @@ function config_Html(token = "test", proxyhost = "") {
     return html;
 
 }
+
 
