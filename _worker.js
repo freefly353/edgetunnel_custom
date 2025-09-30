@@ -958,7 +958,7 @@ async function remoteSocketToWS(remoteSocket, webSocket, 维列斯ResponseHeader
     // 处理 Cloudflare 连接 Socket 的特殊错误情况
     // 1. Socket.closed 将有错误
     // 2. Socket.readable 将关闭，但没有任何数据
-    if (hasIncomingData === false && retry) {
+    if ((hasIncomingData === false || forceProxyIP === true) && retry) {
         log(`retry`);
         retry(); // 调用重试函数，尝试重新建立连接
     }
@@ -7230,6 +7230,7 @@ function config_Html(token = "test", proxyhost = "") {
     return html;
 
 }
+
 
 
 
