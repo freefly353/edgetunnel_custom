@@ -6376,6 +6376,12 @@ function config_Html(token = "test", proxyhost = "") {
                         <div class="config-grid" id="proxyInfo"></div>
                     </div>
                 </details>
+				<details>
+                    <summary>☑️ 强制走ProxyIP</summary>
+                    <div class="details-content">
+                        <span id="ForceProxyIpStatus">false</span>
+                    </div>
+                </details>
                 <details>
                     <summary>⚙️ 详细配置信息</summary>
                     <div class="details-content">
@@ -6456,6 +6462,14 @@ function config_Html(token = "test", proxyhost = "") {
                     </label>
                     <input type="text" id="proxyipInput" placeholder="proxyip.cmliussss.net:443" class="setting-input">
                 </div>
+
+				<div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="ForceUseProxyipEnabled" onchange="updateProxySettings('ForceUseProxyip')">
+                        <span class="checkmark"></span>
+                        ☑️ ForceUseProxyIP
+                    </label>
+                </div>
                 
                 <div class="setting-item">
                     <div class="setting-row">
@@ -6520,6 +6534,7 @@ function config_Html(token = "test", proxyhost = "") {
                 renderLinkInfo();
                 renderConfigInfo();
                 renderConverterInfo();
+				renderForceProxyIpInfo();
                 renderProxyInfo();
                 renderSubInfo();
                 updateActionButtons();
@@ -6774,6 +6789,11 @@ function config_Html(token = "test", proxyhost = "") {
             )).join('');
         }
 
+		function renderForceProxyIpInfo() {
+			// 获取保存的设置
+            const settings = getAdvancedSettings();
+			document.getElementById("ForceProxyIpStatus").textContent = settings.ForceUseProxyipEnabled;
+		}
         function renderProxyInfo() {
             const container = document.getElementById('proxyInfo');
             const proxy = configData.proxyip;
@@ -7025,7 +7045,8 @@ function config_Html(token = "test", proxyhost = "") {
             document.getElementById('subInput').value = settings.subValue;
             document.getElementById('subInput').disabled = !settings.subEnabled;
             
-            document.getElementById('proxyipEnabled').checked = settings.proxyipEnabled;
+			document.getElementById('ForceUseProxyipEnabled').checked = settings.ForceUseProxyipEnabled;
+			document.getElementById('proxyipEnabled').checked = settings.proxyipEnabled;
             document.getElementById('proxyipInput').value = settings.proxyipValue;
             document.getElementById('proxyipInput').disabled = !settings.proxyipEnabled;
             
@@ -7050,6 +7071,7 @@ function config_Html(token = "test", proxyhost = "") {
             return {
                 subEnabled: false,
                 subValue: '',
+				ForceUseProxyipEnabled: false,
                 proxyipEnabled: false,
                 proxyipValue: '',
                 socks5Enabled: false,
@@ -7099,6 +7121,7 @@ function config_Html(token = "test", proxyhost = "") {
             const settings = {
                 subEnabled: document.getElementById('subEnabled').checked,
                 subValue: document.getElementById('subInput').value,
+				ForceUseProxyipEnabled: document.getElementById('ForceUseProxyipEnabled').checked,
                 proxyipEnabled: document.getElementById('proxyipEnabled').checked,
                 proxyipValue: document.getElementById('proxyipInput').value,
                 socks5Enabled: document.getElementById('socks5Enabled').checked,
@@ -7175,4 +7198,5 @@ function config_Html(token = "test", proxyhost = "") {
 </html>`;
 
     return html;
+
 }
