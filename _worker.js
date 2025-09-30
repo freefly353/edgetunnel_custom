@@ -180,11 +180,11 @@ export default {
                 if (url.searchParams.has('sub') && url.searchParams.get('sub') !== '') sub = url.searchParams.get('sub').toLowerCase();
                 if (url.searchParams.has('notls')) noTLS = 'true';
 
-                if(url.searchParams.has('forceProxyIP=true')) {
+                if(url.searchParams.has('forceProxyIP')) {
 					path = `?forceProxyIP=true`;
 				}
 				if (url.searchParams.has('proxyip')) {
-					if (url.searchParams.has('forceProxyIP=true')) {
+					if (url.searchParams.has('forceProxyIP')) {
 						path = `/proxyip=${url.searchParams.get('proxyip')}&forceProxyIP=true`;
 					} else {
                     	path = `/proxyip=${url.searchParams.get('proxyip')}`;
@@ -299,7 +299,7 @@ export default {
                     enableSocks = false;
                 }
 
-				if (url.searchParams.has('forceProxyIP=true')) {
+				if (url.searchParams.has('forceProxyIP')) {
 					forceProxyIP = true;
 				}
                 if (url.searchParams.has('proxyip')) {
@@ -7230,6 +7230,7 @@ function config_Html(token = "test", proxyhost = "") {
     return html;
 
 }
+
 
 
 
