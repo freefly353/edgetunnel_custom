@@ -124,7 +124,8 @@ export default {
 
             const fakeHostName = `${fakeUserIDMD5.slice(6, 9)}.${fakeUserIDMD5.slice(13, 19)}`;
 
-            proxyIP = env.PROXYIP || env.proxyip || proxyIP;
+            forceProxyIP = env.ForceUseProxyIP || forceProxyIP;
+			proxyIP = env.PROXYIP || env.proxyip || proxyIP;
             proxyIPs = await 整理(proxyIP);
             proxyIP = proxyIPs[Math.floor(Math.random() * proxyIPs.length)];
             DNS64Server = env.DNS64 || env.NAT64 || DNS64Server;
@@ -180,7 +181,11 @@ export default {
                 if (url.searchParams.has('notls')) noTLS = 'true';
 
                 if (url.searchParams.has('proxyip')) {
-                    path = `/proxyip=${url.searchParams.get('proxyip')}`;
+					if (url.searchParams.has('forceProxyIP=true')) {
+						path = `/proxyip=${url.searchParams.get('proxyip')}&forceProxyIP=true`;
+					} else {
+                    	path = `/proxyip=${url.searchParams.get('proxyip')}`;
+					}
                     请求CF反代IP = 'false';
                 } else if (url.searchParams.has('socks5')) {
                     path = url.searchParams.has('globalproxy') ? `/?socks5=${url.searchParams.get('socks5')}&globalproxy` : `/?socks5=${url.searchParams.get('socks5')}`;
@@ -291,7 +296,7 @@ export default {
                     enableSocks = false;
                 }
 
-				if (url.searchParams.has('forceProxyIP')) {
+				if (url.searchParams.has('forceProxyIP=true')) {
 					forceProxyIP = true;
 				}
                 if (url.searchParams.has('proxyip')) {
@@ -7222,5 +7227,6 @@ function config_Html(token = "test", proxyhost = "") {
     return html;
 
 }
+
 
 
